@@ -6,7 +6,7 @@
 //
 
 import Testing
-@testable import jarie
+@testable import JarieCore
 
 struct jarieTests {
 

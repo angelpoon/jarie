@@ -1,59 +1,47 @@
-//
-//  ContentView.swift
-//  jarie
-//
-//  Created by Angel Poon on 3/13/26.
-//
-
 import SwiftUI
 import SwiftData
+import JarieCore
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query(sort: \Capture.createdAt, order: .reverse) private var captures: [Capture]
 
     var body: some View {
         NavigationSplitView {
             List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                if captures.isEmpty {
+                    ContentUnavailableView(
+                        "No Captures Yet",
+                        systemImage: "tray",
+                        description: Text("Press \u{2318}\u{21E7}J to capture text or URLs")
+                    )
+                } else {
+                    ForEach(captures) { capture in
+                        NavigationLink {
+                            Text(capture.content)
+                                .padding()
+                        } label: {
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                Text(capture.content)
+                                    .font(JarieFont.headline)
+                                    .lineLimit(2)
+                                Text(capture.createdAt, style: .relative)
+                                    .font(JarieFont.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
+            .navigationSplitViewColumnWidth(min: 180, ideal: 280)
+            .navigationTitle("Captures")
         } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+            Text("Select a capture")
+                .foregroundStyle(.secondary)
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: Capture.self, inMemory: true)
 }

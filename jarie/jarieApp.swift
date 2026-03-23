@@ -1,32 +1,15 @@
-//
-//  jarieApp.swift
-//  jarie
-//
-//  Created by Angel Poon on 3/13/26.
-//
-
 import SwiftUI
-import SwiftData
+import JarieCore
 
 @main
 struct jarieApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        // Minimal scene — the app is a menu bar agent.
+        // Settings scene enables ⌘, to open settings (wired in Batch 7).
+        Settings {
+            SettingsView()
         }
-        .modelContainer(sharedModelContainer)
     }
 }
