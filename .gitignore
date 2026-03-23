@@ -1,0 +1,20 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# SPM build artifacts
+.build/
+.swiftpm/
+
+# Package build cache (should not be committed)
+Packages/*/.build/
+Packages/*/.swiftpm/
+
+# macOS
+.DS_Store
+
+# Secrets
+.env
+*.key
+credentials.json
